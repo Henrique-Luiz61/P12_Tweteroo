@@ -8,6 +8,11 @@ app.use(express.json());
 const arrUsers = [];
 const userNames = [];
 const arrTweets = [];
+const objTweet = {
+  username: "",
+  avatar: "",
+  tweet: "",
+};
 
 app.post("/sign-up", (req, res) => {
   const newUser = {
@@ -16,6 +21,7 @@ app.post("/sign-up", (req, res) => {
   };
   arrUsers.push(newUser);
   userNames.push(newUser.username);
+  objTweet.avatar = newUser.avatar;
 
   res.send("OK");
 });
@@ -30,21 +36,22 @@ app.post("/tweets", (req, res) => {
     tweet: req.body.tweet,
   };
   arrTweets.push(newTweet);
+  objTweet.username = newTweet.username;
+  objTweet.tweet = newTweet.tweet;
 
   res.send("OK");
 });
 
 app.get("/tweets", (req, res) => {
-  const tweets = [
-    {
-      username: "bobesponja",
-      avatar:
-        "https://cdn.shopify.com/s/files/1/0150/0643/3380/files/Screen_Shot_2019-07-01_at_11.35.42_AM_370x230@2x.png",
-      tweet: "Eu amo hambúrguer de siri!",
-    },
-  ];
+  if (arrTweets.length === 10) {
+    arrTweets.shift();
+  }
 
-  res.send(tweets);
+  if (objTweet.tweet !== "") {
+    arrTweets.push(objTweet);
+  }
+
+  res.send(arrTweets);
 });
 
 const PORT = 5000;
