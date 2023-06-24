@@ -9,37 +9,46 @@ const arrUsers = [];
 const arrTweets = [];
 const userNames = [];
 
-//https://cdn.shopify.com/s/files/1/0150/0643/3380/files/Screen_Shot_2019-07-01_at_11.35.42_AM_370x230@2x.png
-
 app.post("/sign-up", (req, res) => {
-  const newUser = {
-    username: req.body.username,
-    avatar: req.body.avatar,
-  };
-  arrUsers.push(newUser);
-  userNames.push(newUser.username);
+  const { username, avatar } = req.body;
 
-  res.send("OK");
+  if (!username || !avatar) {
+    return res.status(400).send("Todos os campos são obrigatórios!");
+  } else {
+    const newUser = {
+      username: username,
+      avatar: avatar,
+    };
+
+    arrUsers.push(newUser);
+    userNames.push(newUser.username);
+
+    res.status(201).send("OK");
+  }
 });
 
 app.post("/tweets", (req, res) => {
+  const { username, tweet } = res.body;
+
   if (userNames.includes(req.body.username) === false) {
-    return res.send("UNAUTHORIZED");
+    return res.status(401).send("UNAUTHORIZED");
+  } else if (!username || !tweet) {
+    res.status(400).send("Todos campos são obrigatórios!");
+  } else {
+    const newTweet = {
+      username: username,
+      avatar: arrUsers[arrUsers.length - 1].avatar,
+      tweet: tweet,
+    };
+
+    if (arrTweets.length === 10) {
+      let tweetRemoved = arrTweets.shift();
+    }
+
+    arrTweets.push(newTweet);
+
+    res.status(201).send("OK");
   }
-
-  const newTweet = {
-    username: req.body.username,
-    avatar: arrUsers[arrUsers.length - 1].avatar,
-    tweet: req.body.tweet,
-  };
-
-  if (arrTweets.length === 10) {
-    let tweetRemoved = arrTweets.shift();
-  }
-
-  arrTweets.push(newTweet);
-
-  res.send("OK");
 });
 
 app.get("/tweets", (req, res) => {
