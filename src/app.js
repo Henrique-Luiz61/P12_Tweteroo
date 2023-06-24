@@ -1,9 +1,38 @@
-import express from "express";
+import express, { json } from "express";
 import cors from "cors";
 
 const app = express();
-
 app.use(cors());
+app.use(express.json());
+
+const arrUsers = [];
+const userNames = [];
+const arrTweets = [];
+
+app.post("/sign-up", (req, res) => {
+  const newUser = {
+    username: req.body.username,
+    avatar: req.body.avatar,
+  };
+  arrUsers.push(newUser);
+  userNames.push(newUser.username);
+
+  res.send("OK");
+});
+
+app.post("/tweets", (req, res) => {
+  if (userNames.includes(req.body.username) === false) {
+    return res.send("UNAUTHORIZED");
+  }
+
+  const newTweet = {
+    username: req.body.username,
+    tweet: req.body.tweet,
+  };
+  arrTweets.push(newTweet);
+
+  res.send("OK");
+});
 
 app.get("/tweets", (req, res) => {
   const tweets = [
