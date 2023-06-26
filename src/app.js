@@ -12,7 +12,12 @@ const userNames = [];
 app.post("/sign-up", (req, res) => {
   const { username, avatar } = req.body;
 
-  if (!username || !avatar) {
+  if (
+    !username ||
+    !avatar ||
+    typeof username !== "string" ||
+    typeof avatar !== "string"
+  ) {
     return res.status(400).send("Todos os campos são obrigatórios!");
   } else {
     const newUser = {
@@ -28,12 +33,17 @@ app.post("/sign-up", (req, res) => {
 });
 
 app.post("/tweets", (req, res) => {
-  const { username, tweet } = res.body;
+  const { username, tweet } = req.body;
 
-  if (userNames.includes(req.body.username) === false) {
-    return res.status(401).send("UNAUTHORIZED");
-  } else if (!username || !tweet) {
+  if (
+    !username ||
+    !tweet ||
+    typeof username !== "string" ||
+    typeof tweet !== "string"
+  ) {
     res.status(400).send("Todos campos são obrigatórios!");
+  } else if (userNames.includes(username) === false) {
+    res.status(401).send("UNAUTHORIZED");
   } else {
     const newTweet = {
       username: username,
